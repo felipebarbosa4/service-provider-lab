@@ -1,0 +1,18 @@
+# Fictional lab example. Review syntax for the exact Junos release before use.
+set system host-name ott-pe-01
+set routing-options router-id 192.0.2.11
+set routing-options autonomous-system 64512
+
+set interfaces ge-0/0/0 description "Fictional CE-A lab link"
+set interfaces ge-0/0/0 unit 0 family inet address 203.0.113.0/31
+
+set policy-options prefix-list CE-A-APPROVED 198.51.100.10/32
+set policy-options policy-statement CE-A-IN term approved from prefix-list CE-A-APPROVED
+set policy-options policy-statement CE-A-IN term approved then accept
+set policy-options policy-statement CE-A-IN term reject then reject
+
+set protocols bgp group CE-A type external
+set protocols bgp group CE-A family inet unicast
+set protocols bgp group CE-A peer-as 65010
+set protocols bgp group CE-A import CE-A-IN
+set protocols bgp group CE-A neighbor 203.0.113.1 description "ce-a"
